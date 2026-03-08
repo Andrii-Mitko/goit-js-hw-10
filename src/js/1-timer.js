@@ -1,6 +1,8 @@
-
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+
+import iziToast from "izitoast";
+import "izitoast/dist/css/iziToast.min.css";
 
 const input = document.querySelector('#datetime-picker');
 const startBtn = document.querySelector('[data-start]');
@@ -12,18 +14,29 @@ const secondsEl = document.querySelector('[data-seconds]');
 let selectedDate = null;
 let timerId = null;
 
+startBtn.disabled = true;
 
 flatpickr(input, {
   enableTime: true,
   time_24hr: true,
   dateFormat: "Y-m-d H:i",
+  minuteIncrement: 1,
   defaultDate: new Date(),
-  onClose: (dates) => {
-    selectedDate = dates[0];
-    if (selectedDate < new Date()) {
-      alert("Обрано минулу дату!");
-      selectedDate = null;
+
+  onClose(selectedDates) {
+    selectedDate = selectedDates[0];
+
+    if (selectedDate <= new Date()) {
+      startBtn.disabled = true;
+
+      iziToast.error({
+        message: "Please choose a date in the future"
+      });
+
+      return;
     }
+
+    startBtn.disabled = false;
   }
 });
 
@@ -41,26 +54,40 @@ function convertMs(ms) {
   return { days, hours, minutes, seconds };
 }
 
+function addZero(value) {
+  return String(value).padStart(2, "0");
+}
+
 function updateTimer() {
-  const now = new Date();
-  const delta = selectedDate - now;
+  const delta = selectedDate - new Date();
 
   if (delta <= 0) {
     clearInterval(timerId);
-    daysEl.textContent = hoursEl.textContent = minutesEl.textContent = secondsEl.textContent = '00';
+
+    input.disabled = false;
+    startBtn.disabled = true;
+
+    daysEl.textContent =
+      hoursEl.textContent =
+      minutesEl.textContent =
+      secondsEl.textContent =
+        "00";
+
     return;
   }
 
   const { days, hours, minutes, seconds } = convertMs(delta);
-  daysEl.textContent = String(days).padStart(2, '0');
-  hoursEl.textContent = String(hours).padStart(2, '0');
-  minutesEl.textContent = String(minutes).padStart(2, '0');
-  secondsEl.textContent = String(seconds).padStart(2, '0');
+
+  daysEl.textContent = addZero(days);
+  hoursEl.textContent = addZero(hours);
+  minutesEl.textContent = addZero(minutes);
+  secondsEl.textContent = addZero(seconds);
 }
 
-startBtn.addEventListener('click', () => {
-  if (!selectedDate) return alert('Выбери дату!');
-  clearInterval(timerId);
+startBtn.addEventListener("click", () => {
+  startBtn.disabled = true;
+  input.disabled = true;
+
   updateTimer();
   timerId = setInterval(updateTimer, 1000);
 });
