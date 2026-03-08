@@ -1,4 +1,4 @@
-// файл: ./js/1-timer.js
+
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 
@@ -12,7 +12,7 @@ const secondsEl = document.querySelector('[data-seconds]');
 let selectedDate = null;
 let timerId = null;
 
-// Настройка flatpickr
+
 flatpickr(input, {
   enableTime: true,
   time_24hr: true,
@@ -21,13 +21,12 @@ flatpickr(input, {
   onClose: (dates) => {
     selectedDate = dates[0];
     if (selectedDate < new Date()) {
-      alert("Выбрана прошедшая дата!");
+      alert("Обрано минулу дату!");
       selectedDate = null;
     }
   }
 });
 
-// Конвертация миллисекунд в дни, часы, минуты, секунды
 function convertMs(ms) {
   const second = 1000;
   const minute = second * 60;
@@ -42,7 +41,6 @@ function convertMs(ms) {
   return { days, hours, minutes, seconds };
 }
 
-// Обновление таймера
 function updateTimer() {
   const now = new Date();
   const delta = selectedDate - now;
@@ -60,7 +58,6 @@ function updateTimer() {
   secondsEl.textContent = String(seconds).padStart(2, '0');
 }
 
-// Старт таймера
 startBtn.addEventListener('click', () => {
   if (!selectedDate) return alert('Выбери дату!');
   clearInterval(timerId);
