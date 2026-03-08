@@ -64,3 +64,4 @@ startBtn.addEventListener('click', () => {
   updateTimer();
   timerId = setInterval(updateTimer, 1000);
 });
+
