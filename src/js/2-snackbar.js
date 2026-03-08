@@ -2,7 +2,6 @@
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
-
 iziToast.settings({
   timeout: 3000,
   icon: 'material-icons',
@@ -10,17 +9,11 @@ iziToast.settings({
   transitionOut: 'flipOutX',
 });
 
-
 const form = document.querySelector('.form');
-
 form.addEventListener('submit', (e) => {
   e.preventDefault();
-
-  
   const delay = Number(form.delay.value);
-
   const state = form.state.value;
-
 
   const promise = new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -31,7 +24,6 @@ form.addEventListener('submit', (e) => {
       }
     }, delay);
   });
-
   promise
     .then((delay) => {
       console.log(`✅ Fulfilled promise in ${delay}ms`);
